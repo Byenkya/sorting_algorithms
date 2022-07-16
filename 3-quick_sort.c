@@ -1,74 +1,75 @@
 #include "sort.h"
-#include <stdio.h>
-/**
- * quick_sort - sorts an array of integers in ascending order
- * using the quick sort sort algorithm
- * @array: pointer to the array
- * @size: size of the array
-*/
-void quick_sort(int *array, size_t size)
-{
-recursive_quick_sort(array, size, 0, size - 1);
-}
 
 /**
- * recursive_quick_sort - recursive part
- * @array: array to use
- * @size: size
- * @start: start index
- * @end: end index
-*/
-void recursive_quick_sort(int *array, size_t size, int start, int end)
-{
-int p;
-if (start < end)
-{
-	p = partition(array, size, start, end);
+ * partition - crates a partition following the louto partition scheme
+ *
+ * @array: the array to sort
+ * @low: the lowest position of the partition
+ * @high: the highes position of the partition
+ * @size: the size of the array
+ *
+ * Return: the position to perform recursion
+ */
 
-	recursive_quick_sort(array, size, start, p - 1);
-	recursive_quick_sort(array, size, p + 1, end);
-}
-
-}
-
-/**
- * partition - partition the array
- * @array: array to use
- * @size: size
- * @start: start index
- * @end: end index
- * Return: partition index
-*/
-size_t partition(int *array, size_t size, int start, int end)
+int partition(int *array, int low, int high, size_t size)
 {
-int pivot = array[end];
-int i = start - 1;
-int j;
+	int pivot, i, j, save;
 
-for (j = start; j <= end - 1; j++)
-{
-	if (array[j] < pivot)
+	pivot = array[high];
+	i = low - 1;
+	for (j = low; j <= high - 1; j++)
 	{
-		i++;
-		swap_int1(array, i, j);
+		if (array[j] <= pivot)
+		{
+			i++;
+			save = array[i];
+			array[i] = array[j];
+			array[j] = save;
+			if (i != j)
+				print_array(array, size);
+
+		}
+	}
+	save = array[i + 1];
+	array[i + 1] = array[j];
+	array[j] = save;
+	if (i + 1 != high)
 		print_array(array, size);
+	return (i + 1);
+}
+
+/**
+ * quick - performs the recursion of the quicksort algorithm
+ *
+ * @array: array to sort
+ * @low: lowest position
+ * @high: highest position
+ * @size: size of the array
+ */
+
+void quick(int *array, int low, int high, size_t size)
+{
+	int pos;
+
+	if (low < high)
+	{
+		pos  = partition(array, low, high, size);
+		quick(array, low, pos - 1, size);
+		quick(array, pos + 1, high, size);
 	}
 }
-swap_int1(array, i + 1, end);
-print_array(array, size);
-return (i+1);
-}
 
 /**
- * swap_int1 - swap variable values
- * @array: array to use
- * @a: index 1
- * @b: index 2
-*/
-void swap_int1(int *array, int a, int b)
+ * quick_sort - sort an array by quicksort method
+ * @array: array to be sorted
+ * @size: size of the array
+ *
+ * Return: Nothing, it's a void functions
+ */
+
+void quick_sort(int *array, size_t size)
 {
-int tmp;
-tmp = array[a];
-array[a] = array[b];
-array[b] = tmp;
+	if (!array || size < 2)
+		return;
+	quick(array, 0, (int)size - 1, size);
 }
